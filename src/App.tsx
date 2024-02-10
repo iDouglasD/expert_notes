@@ -1,6 +1,11 @@
 import logo from "./assets/logo-nlw-expert.svg"
-import { NewNotCard } from "./components/new-note-card.tsx"
+import { NewNoteCard } from "./components/new-note-card.tsx"
 import { NoteCard } from "./components/note-card.tsx"
+
+const note = {
+  date: new Date(),
+  content: "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua."
+}
 
 export function App() {
 
@@ -16,8 +21,10 @@ export function App() {
       </form>
       <div className="h-px bg-slate-700" />
       <div className="grid grid-cols-3 gap-6 auto-rows-[250px]">
-        <NewNotCard />
-        <NoteCard />
+        <NewNoteCard />
+        <NoteCard
+          note={note}
+        />
       </div>
     </div>
   )
