@@ -3,16 +3,26 @@ import { X } from "lucide-react"
 import { ChangeEvent, useState } from "react"
 import { useForm } from "react-hook-form"
 import { toast } from 'sonner'
+import * as zod from 'zod'
+import { zodResolver } from '@hookform/resolvers/zod'
 
-interface NoteInputs {
-  content: string
+interface NewNoteCardProps {
+  onNoteCreated: (content: string) => void
 }
 
-export const NewNoteCard = () => {
-  const [shouldShowOnboarding, setShouldShowOnboarding] = useState<boolean>(true)
-  const newNote = useForm<NoteInputs>()
+const newNoteCardFormValidationSchema = zod.object({
+  content: zod.string().min(1)
+})
 
-  const { register, handleSubmit } = newNote
+type NewNoteCardFormData = zod.infer<typeof newNoteCardFormValidationSchema>
+
+export const NewNoteCard = ({ onNoteCreated }: NewNoteCardProps) => {
+  const [shouldShowOnboarding, setShouldShowOnboarding] = useState<boolean>(true)
+  const newNote = useForm<NewNoteCardFormData>({
+    resolver: zodResolver(newNoteCardFormValidationSchema)
+  })
+
+  const { register, handleSubmit, reset } = newNote
 
   function handleStartEditor() {
     setShouldShowOnboarding(false)
@@ -25,9 +35,9 @@ export const NewNoteCard = () => {
     }
   }
 
-  function handleSaveNote(data: NoteInputs) {
-    console.log(data)
-    console.log("Saving note...")
+  function handleSaveNote({ content }: NewNoteCardFormData) {
+    onNoteCreated(content)
+    reset()
     toast.success("Nota criada com sucesso!")
   }
 
